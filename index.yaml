@@ -3,6 +3,16 @@ entries:
   config:
   - apiVersion: v2
     appVersion: 2.0.1
+    created: "2022-12-07T19:16:55.980908624Z"
+    description: Akurata Helm cluster Common
+    digest: 31fb6411fadbbd00be5454eb8eed7541c1550c678c60e20e8424b4d390085edf
+    name: config
+    type: application
+    urls:
+    - https://github.com/Akurata/cluster-helm/releases/download/config-1.0.3/config-1.0.3.tgz
+    version: 1.0.3
+  - apiVersion: v2
+    appVersion: 2.0.1
     created: "2022-12-07T17:14:08.883164188Z"
     description: Akurata Helm cluster Common
     digest: 251248f972d558e8d62dba60cbb568182f742f5ab297f3ac781e7fac0f51e618
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/Akurata/cluster-helm/releases/download/config-1.0.2/config-1.0.2.tgz
     version: 1.0.2
-generated: "2022-12-07T17:14:08.883281889Z"
+generated: "2022-12-07T19:16:55.980915024Z"
