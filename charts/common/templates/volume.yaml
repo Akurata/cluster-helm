@@ -1,0 +1,17 @@
+{{- range $name, $volume := .Values.volumes }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  name: {{ $name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: {{ $volume.storageClass }}
+  resources:
+    requests:
+      storage: {{ $volume.size }}
+{{- end }}

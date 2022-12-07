@@ -1,0 +1,72 @@
+{{- if .Values.database }}
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  name: database
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 3
+  image: {{ .Values.database.image }}
+  port: {{ .Values.database.port }}
+  database:
+    size: {{ .Values.database.size }}
+    storageClassName: {{ .Values.database.storageClass }}
+    volumeMount: /var/lib/postgresql/data
+  customConfig: {{ .Values.database.config }}
+  backup:
+    schedule: {{ .Values.database.backup.cron | quote }}
+    pvcName: {{ .Values.database.backup.volume }}
+    volumeMount: /var/lib/backup
+  resources:
+    limits:
+      cpu: {{ .Values.database.resources.limits.cpu | quote }}
+      memory: {{ .Values.database.resources.limits.memory }}
+    requests:
+      cpu: {{ .Values.database.resources.requests.cpu | quote }}
+      memory: {{ .Values.database.resources.requests.memory }}
+  volume:
+    volumes:
+      - name: kubegres-{{ .Values.database.schema.configMap }}
+        configMap:
+          name: {{ .Values.database.schema.configMap }}
+    volumeMounts:
+      - name: kubegres-{{ .Values.database.schema.configMap }}
+        mountPath: {{ .Values.database.schema.mountPath }}
+        readOnly: true
+  {{- if .Values.database.env }}
+  env:
+    {{- range $name, $value := .Values.database.env }}
+    {{- if kindIs "map" $value }}
+    - name: {{ $name }}
+      valueFrom:
+        secretKeyRef:
+          name: {{ $value.ref }}
+          key: {{ $value.key }}
+    {{- else }}
+    - name: {{ $name | quote }}
+      value: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  labels:
+    app: database
+  name: database-external
+  namespace: {{ $.Values.namespace }}
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    app: database
+    replicationRole: primary
+  type: LoadBalancer
+{{- end }}

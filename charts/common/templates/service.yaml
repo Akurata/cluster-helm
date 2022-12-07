@@ -1,0 +1,25 @@
+{{- range $name, $data := .Values.services }}
+{{- if $data.ports }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  labels:
+    app: {{ $name }}
+  name: {{ $name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  ports:
+  {{- range $data.ports }}
+  - port: {{ . }}
+    targetPort: {{ . }}
+    name: scv-port-{{ . }}
+    protocol: TCP
+  {{- end }}
+  selector:
+    app: {{ $name }}
+  type: LoadBalancer
+{{- end }}
+{{- end }}

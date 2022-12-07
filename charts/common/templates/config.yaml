@@ -1,0 +1,21 @@
+{{- range $name, $config := .Values.configs }}
+---
+apiVersion: v1
+data:
+  {{- range $key, $value := $config }}
+  {{- if kindIs "map" $value }}
+  {{ $key }}: |-
+    {{- $.Files.Get $value.path | indent 4 }}
+  {{- else }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/instance: {{ $name }}-config
+  name: {{ $name }}
+  namespace: {{ $.Values.namespace }}
+{{- end }}
