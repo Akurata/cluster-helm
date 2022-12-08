@@ -66,8 +66,8 @@ spec:
               valueFrom:
                 {{- toYaml $value | nindent 16 -}}
             {{- else }}
-            - name: {{ $name | toString }}
-              value: {{ $value | toString }}
+            - name: {{ $name | quote }}
+              value: {{ $value | quote }}
             {{- end }}
             {{- end }}
           {{- end }}
