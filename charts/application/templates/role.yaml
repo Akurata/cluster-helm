@@ -1,0 +1,35 @@
+{{- range $roleName, $roleRules := .Values.roles }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $roleName }}-sa
+  namespace: {{ $.Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ $roleName }}-role
+  namespace: {{ $.Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+rules: {{ toYaml $roleRules | nindent 2 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ $roleName }}-binding
+  namespace: {{ $.Values.namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+subjects:
+- kind: ServiceAccount
+  name: {{ $roleName }}-sa
+  namespace: {{ $.Values.namespace }}
+roleRef:
+  kind: Role
+  name: {{ $roleName }}-role
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

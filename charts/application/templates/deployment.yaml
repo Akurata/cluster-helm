@@ -22,6 +22,9 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/arch: amd64
+      {{- if $data.role }}
+      serviceAccountName: {{ $data.role }}
+      {{- end }}
       containers:
         - name: {{ $name }}
           image: "{{ $data.image.repo }}:{{ $data.image.tag }}"
@@ -64,9 +67,7 @@ spec:
             {{- if kindIs "map" $value }}
             - name: {{ $name }}
               valueFrom:
-                secretKeyRef:
-                  name: {{ $value.ref }}
-                  key: {{ $value.key }}
+                {{- toYaml $value | nindent 16 -}}
             {{- else }}
             - name: {{ $name | toString }}
               value: {{ $value | toString }}
