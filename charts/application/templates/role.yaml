@@ -1,5 +1,5 @@
 {{- range $roleName, $roleRules := .Values.roles }}
----
+{{/* TODO: Decide best format for substituting the default service account
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -7,11 +7,12 @@ metadata:
   namespace: {{ $.Values.namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "2"
+*/}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ $roleName }}-role
+  name: {{ $roleName }}
   namespace: {{ $.Values.namespace }}
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -26,10 +27,10 @@ metadata:
     argocd.argoproj.io/sync-wave: "2"
 subjects:
 - kind: ServiceAccount
-  name: {{ $roleName }}
+  name: default
   namespace: {{ $.Values.namespace }}
 roleRef:
   kind: Role
-  name: {{ $roleName }}-role
+  name: {{ $roleName }}
   apiGroup: rbac.authorization.k8s.io
 {{- end }}

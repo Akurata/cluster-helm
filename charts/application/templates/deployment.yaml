@@ -22,9 +22,6 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/arch: amd64
-      {{- if $data.role }}
-      serviceAccountName: {{ $data.role }}
-      {{- end }}
       containers:
         - name: {{ $name }}
           image: "{{ $data.image.repo }}:{{ $data.image.tag }}"
