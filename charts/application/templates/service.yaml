@@ -22,4 +22,35 @@ spec:
     app: {{ $name }}
   type: LoadBalancer
 {{- end }}
+
+{{/* 
+  Create any headless ports if they are defined.
+  Used to create a service entry that lets you
+  make DNS lookups against the other pod ips
+  in the same deployment
+*/}}
+{{- if $data.headlessPorts }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  labels:
+    app: {{ $name }}
+  name: {{ $name }}-headless
+  namespace: {{ $.Values.namespace }}
+spec:
+  clusterIP: None
+  ports:
+  {{- range $data.headlessPorts }}
+  - port: {{ . }}
+    targetPort: {{ . }}
+    name: scv-headless-port-{{ . }}
+    protocol: TCP
+  {{- end }}
+  selector:
+    app: {{ $name }}
+  type: ClusterIP
+{{- end }}
 {{- end }}
