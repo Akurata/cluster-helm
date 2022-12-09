@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   application:
   - apiVersion: v2
+    appVersion: 2.0.7
+    created: "2022-12-09T19:21:06.064382347Z"
+    description: Akurata helm cluster application chart
+    digest: d4fb7a243fc1c98afbfd8129c7926ba15c1c75126b3a5d0f9b4b44b22c619444
+    name: application
+    type: application
+    urls:
+    - https://github.com/Akurata/cluster-helm/releases/download/application-2.0.7/application-2.0.7.tgz
+    version: 2.0.7
+  - apiVersion: v2
     appVersion: 2.0.6
     created: "2022-12-08T17:28:24.304223013Z"
     description: Akurata helm cluster application chart
@@ -92,4 +102,4 @@ entries:
     urls:
     - https://github.com/Akurata/cluster-helm/releases/download/config-1.0.2/config-1.0.2.tgz
     version: 1.0.2
-generated: "2022-12-08T17:28:24.304246213Z"
+generated: "2022-12-09T19:21:06.064414544Z"
