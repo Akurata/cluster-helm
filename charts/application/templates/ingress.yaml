@@ -1,5 +1,5 @@
 {{- range $name, $data := .Values.services }}
-{{- if and ($data.ports) ($data.host) }}
+{{- if and ($data.ports) ($data.ingress.host) }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -9,9 +9,9 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.org/client-max-body-size: "0"
     nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
-    {{- if $data.cors }}
+    nginx.ingress.kubernetes.io/proxy-read-timeout: {{ $data.ingress.timeout| default 600 | quote }}
+    nginx.ingress.kubernetes.io/proxy-send-timeout: {{ $data.ingress.timeout | default 600 | quote }}
+    {{- if $data.ingress.cors }}
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/configuration-snippet: |
       more_set_headers "Access-Control-Allow-Origin: {{ $data.cors }}";
@@ -21,7 +21,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: {{ $data.host }}
+    - host: {{ $data.ingress.host }}
       http:
         paths:
           - backend:
@@ -33,7 +33,7 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - {{ $data.host }}
+        - {{ $data.ingress.host }}
       secretName: {{ $.Values.namespace }}-{{ $name }}-tls
 {{- end }}
 {{- end }}
