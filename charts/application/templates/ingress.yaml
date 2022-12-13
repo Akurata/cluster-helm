@@ -16,7 +16,7 @@ metadata:
     */}}
     {{- if $data.ingress.websocket }}
     nginx.ingress.kubernetes.io/server-snippets: |
-      location ~ {{ $data.ingress.websocket }} {
+      location {{ $data.ingress.websocket }} {
         proxy_set_header Upgrade $http_upgrade;
         proxy_http_version 1.1;
         proxy_set_header X-Forwarded-Host $http_host;
